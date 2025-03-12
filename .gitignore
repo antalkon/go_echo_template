@@ -1,0 +1,6 @@
+.env
+
+# Swagger docs (если генерируется автоматически)
+docs/
+swagger.json
+swagger.yaml
