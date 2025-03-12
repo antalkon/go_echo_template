@@ -25,6 +25,18 @@ func NewAuthHandler(auth *service.AuthService) *AuthHandler {
 	}
 }
 
+// SignUpUser регистрирует нового пользователя.
+//
+// @Summary      Регистрация пользователя
+// @Description  Создаёт нового пользователя и выдаёт access-токен
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        user body models.User true "Данные пользователя"
+// @Success      201 {object} res.SignUpRes
+// @Failure      400 {object} utils.ErrorResponse
+// @Failure      500 {object} utils.ErrorResponse
+// @Router       /auth/sign-up [post]
 func (h *AuthHandler) SignUpUser(c echo.Context) error {
 	var client models.User
 	if err := c.Bind(&client); err != nil {
@@ -45,6 +57,19 @@ func (h *AuthHandler) SignUpUser(c echo.Context) error {
 		Message: "User created successfully"})
 }
 
+// SignInUser аутентифицирует пользователя и возвращает access-токен.
+//
+// @Summary      Авторизация пользователя
+// @Description  Проверяет телефон и пароль, затем выдаёт access-токен
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials body req.SignInReq true "Данные для входа"
+// @Success      200 {object} res.SignInRes
+// @Failure      400 {object} utils.ErrorResponse
+// @Failure      401 {object} utils.ErrorResponse
+// @Failure      500 {object} utils.ErrorResponse
+// @Router       /auth/sign-in [post]
 func (h *AuthHandler) SignInUser(c echo.Context) error {
 	var req req.SignInReq
 	if err := c.Bind(&req); err != nil {

@@ -4,6 +4,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Description Структура, описывающая пользователя
+
 type User struct {
 	ID           uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"` // Явно указываем UUID
 	PhoneNumber  string    `json:"phone_number" validate:"required,e164"`

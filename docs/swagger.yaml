@@ -1,0 +1,151 @@
+basePath: /api/v1
+definitions:
+  models.User:
+    properties:
+      email_adress:
+        type: string
+      id:
+        description: Явно указываем UUID
+        type: string
+      name:
+        maxLength: 50
+        minLength: 3
+        type: string
+      password:
+        description: '`omitempty` убирает пустые значения из JSON'
+        type: string
+      phone_number:
+        type: string
+    required:
+    - email_adress
+    - name
+    - phone_number
+    type: object
+  req.SignInReq:
+    properties:
+      password:
+        maxLength: 50
+        minLength: 6
+        type: string
+      phone_number:
+        type: string
+    required:
+    - password
+    - phone_number
+    type: object
+  res.SignInRes:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  res.SignUpRes:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  utils.ErrorResponse:
+    properties:
+      message:
+        example: Error message
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact: {}
+  description: Go echo template API swagger documentation
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Go Echo Template API
+  version: "1.0"
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет телефон и пароль, затем выдаёт access-токен
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/req.SignInReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.SignInRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Авторизация пользователя
+      tags:
+      - Auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт нового пользователя и выдаёт access-токен
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/res.SignUpRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Регистрация пользователя
+      tags:
+      - Auth
+  /ping:
+    get:
+      description: Returns a pong response to indicate the service is up and running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Ping endpoint
+      tags:
+      - health
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
